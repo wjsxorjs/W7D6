@@ -105,7 +105,7 @@
 			</thead>
 			<tbody>
 			<c:forEach var="evo" items="${e_ar }">
-			<tr>
+			<tr data-sal="${evo.sal }" data-mgr="${evo.mgr}">
 				<td>${evo.empno }</td>
 				<td>${evo.ename}</td>
 				<td>${evo.job }</td>
@@ -122,13 +122,13 @@
 	   	<h2>사원 정보</h2>
 	   </header>
 	   	 <table class="table">
+           	<colgroup>
+           		<col width="100px"/>
+           		<col width="*"/>
+           	</colgroup>
             <thead>
                 <tr>
-                    <th>사번</th>
-                    <th>이름</th>
-                    <th>직종</th>
-                    <th>입사일</th>
-                    <th>부서코드</th>
+                	<th colspan="2">사원정보</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -146,16 +146,26 @@
 	});
 	
 	function viewData(tr){
+		let th_ar = $("#t1 thead tr").children();
 		// 클릭한 tr객체가 인자로 넘어온다.
 		// 그 tr의 자식들(td들)을 얻어낸다.
 		let td_ar = $(tr).children();
-		let str = "<tr>";
+		let str = "";
 		for(let i=0;i<td_ar.length;i++){
-			str += "<td>";
+			str += "<tr><th>";
+			str += th_ar.eq(i).text();
+			str += "</th><td>";
 			str += td_ar.eq(i).text();
-			str += "</td>";
+			str += "</td></tr>";
 		}
-		str += "</tr>"
+		
+		str += "<tr><th>급여</th><td>";
+		str += $(tr).data('sal');
+		str += "</td></tr>";
+		str += "<tr><th>부서장 사번</th><td>";
+		str += $(tr).data('mgr');
+		str += "</td></tr>";
+		
 		$(".table tbody").html(str);
 		popOpen();
 	}
@@ -202,7 +212,13 @@
 // 			$("div").remove(".dialog");
 			
 			for(let i=0; i<data.len; i++){
-				str += "<tr onclick='viewData(this)'>";
+				str += "<tr onclick='viewData(this)' data-sal='";
+				str += e_ar[i].sal;
+				str += "' data-mgr='";
+				if(e_ar[i].mgr != null){
+					str += e_ar[i].mgr;
+				}
+				str += "'>";
 				str +=   "<td>";
 				str +=     e_ar[i].empno;
 				str +=   "</td>";
