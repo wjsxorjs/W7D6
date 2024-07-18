@@ -1,8 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
 	
 	<!-- Root Context: defines shared resources visible to all other web components -->
-		
+	<!-- 
+		jdbc.properties 파일을 로드하기 위해 context라는
+		네임스페이스와 스키마객체가 필요하다.
+	 -->
+	 <context:property-placeholder
+	 	location="classpath:mybatis/props/jdbc.properties"/>
+	 	
+	 <!-- DataSource 객체 -->
+	<bean id="ds" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driver}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.user}" />
+		<property name="password" value="${jdbc.pwd}" />
+		<!-- 최대 동시 커넥션 수 -->
+		<property name="maxActive" value="${jdbc.maxActive}" />
+		<!-- 커넥션 반납시 최대 커넥션 유지 수 -->
+		<property name="maxIdle" value="${jdbc.maxIdle}" />
+		<!-- 커넥션 반납시 최소 커넥션 유지 수 -->
+		<property name="minIdle" value="${jdbc.minIdle}" />
+	</bean>
+	
+	<bean id="factory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="ds" />
+		<property name="mapperLocations" value="classpath:mybatis/mapper/**/*.xml" />
+	</bean>
+	
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="factory" />
+	</bean>
+	
+	<!-- 필요한 DAO들 -->
+	<context:component-scan base-package="mybatis.dao" />
+	 
+	 
 </beans>
