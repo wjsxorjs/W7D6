@@ -88,18 +88,26 @@
 			type: "post",
 			dataType: "json",
 		}).done(function(data){
-			$("#t1 tbody").html("");
 			let d_ar = data.d_ar;
-					for(let i=0; i<data.len; i++){
-			$("#t1 tbody").html(
-					$("#t1 tbody").html()+
-					"<tr>"+
-					"<td>"+d_ar[i].deptno+"</td>"+
-					"<td>"+d_ar[i].dname+"</td>"+
-					"<td>"+d_ar[i].loc_code+"</td>"+
-					"</tr>"
-					);
-					}
+			
+			let str = "";
+			
+			for(let i=0; i<data.len; i++){
+				str += "<tr>";
+				str +=  "<td>";
+				str +=   d_ar[i].deptno;
+				str +=  "</td>";
+				str +=  "<td>";
+				str +=   d_ar[i].dname;
+				str +=  "</td>";
+				str +=  "<td>";
+				str +=   d_ar[i].loc_code;
+				str +=  "</td>";
+				str += "</tr>";
+				
+			}
+			$("#t1 tbody").html(str);
+			
 		});
 		
 		
